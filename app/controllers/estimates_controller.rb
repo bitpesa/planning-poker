@@ -2,6 +2,8 @@ class EstimatesController < ApplicationController
   def create
     #user_name = params[:user_name]
     payload = JSON.parse(params[:payload])
+    payload = ActiveSupport::HashWithIndifferentAccess.new(payload)
+    Rails.logger.info payload
     slack_id = payload[:slack_id]
     poker_session_id = payload[:callback_id]
     poker_session = PokerSession.find(poker_session_id)
