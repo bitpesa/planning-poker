@@ -1,14 +1,14 @@
 class EstimatesController < ApplicationController
   def create
-    #user_name = params[:user_name]
     payload = JSON.parse(params[:payload])
     payload = ActiveSupport::HashWithIndifferentAccess.new(payload)
+
     Rails.logger.info payload
-    slack_id = payload[:slack_id]
     poker_session_id = payload[:callback_id]
+
     poker_session = PokerSession.find(poker_session_id)
     number = payload[:value]
-    user = User.first_or_create_by(slack_id: slack_id)
+    user = find_or_create_user(payload[:user])
     estimate = poker_session.estimates.new(
       user: user,
       number: number
@@ -19,5 +19,13 @@ class EstimatesController < ApplicationController
     else
       head 422
     end
+  end
+
+  def find_or_create_user(slack_user)
+    slack_id = slack_user[:id]
+    name = slack_user[:name]
+    user = User.find_by(slack_id: slack_id)
+    user ||= User.create(slack_id: slack_id, name: name)
+    user
   end
 end
