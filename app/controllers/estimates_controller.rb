@@ -6,8 +6,10 @@ class EstimatesController < ApplicationController
     Rails.logger.info payload
     poker_session_id = payload[:callback_id]
 
+    action = payload[:actions].first
+
     poker_session = PokerSession.find(poker_session_id)
-    number = payload[:value]
+    number = action[:value]
     user = find_or_create_user(payload[:user])
     estimate = poker_session.estimates.new(
       user: user,
