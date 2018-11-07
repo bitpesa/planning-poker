@@ -7,7 +7,7 @@ class PokerSlackMessage
   end
 
   def json
-    {
+    '{
       "text": story_name,
       "attachments": [
         {
@@ -84,11 +84,12 @@ class PokerSlackMessage
           ]
         }
       ]
-    }
+    }'
   end
 
   def send
-    RestClient.post(slack_url, json)
+    hash = JSON.parse(json)
+    RestClient.post(slack_url, hash)
   end
 
    def slack_url
