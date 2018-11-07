@@ -31,5 +31,6 @@ module PlanningPoker
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+    config.paths.add Rails.root.join('lib').to_s, eager_load: true
   end
 end
