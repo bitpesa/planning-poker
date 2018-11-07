@@ -15,9 +15,17 @@ class EstimatesController < ApplicationController
     )
 
     if estimate.save
-      head 200
+      render json: {
+        response_type: "ephemeral",
+        replace_original: false,
+        text: "You estimated #{estimate.number}, end the planning session to see the results!"
+      }
     else
-      head 422
+      render json: {
+        response_type: "ephemeral",
+        replace_original: false,
+        text: "You've already estimated!"
+      }
     end
   end
 

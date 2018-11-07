@@ -12,7 +12,7 @@ class PokerSlackMessage
       attachments: [
         {
           text: 'Please pick an estimate',
-          fallback: 'You are unable to choose a game',
+          fallback: 'You are unable to make an estimate',
           callback_id: poker_session_id,
           color: '#3AA3E3',
           attachment_type: 'default',
@@ -48,7 +48,7 @@ class PokerSlackMessage
           ]
         },
         {
-          fallback: 'You are unable to choose a game',
+          fallback: 'You are unable to make an estimate',
           callback_id: poker_session_id,
           color: '#3AA3E3',
           attachment_type: 'default',
@@ -82,7 +82,8 @@ class PokerSlackMessage
               value: '?'
             }
           ]
-        }
+        },
+
       ]
     }
   end
