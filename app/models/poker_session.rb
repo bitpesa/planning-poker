@@ -1,0 +1,2 @@
+class PokerSession < ApplicationRecord
+end
