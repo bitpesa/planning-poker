@@ -11,23 +11,32 @@ class EstimatesController < ApplicationController
     poker_session = PokerSession.find(poker_session_id)
     number = action[:value]
     user = find_or_create_user(payload[:user])
-    estimate = poker_session.estimates.new(
-      user: user,
-      number: number
-    )
-
-    if estimate.save
+    if action[:name] == 'end'
+      poker_session.complete_session
       render json: {
-        response_type: "ephemeral",
-        replace_original: false,
-        text: "You estimated #{estimate.number}, end the planning session to see the results!"
+        response_type: 'in_channel',
+        replace_original: true,
+        text: "The team voted #{poker_session.result}"
       }
     else
-      render json: {
-        response_type: "ephemeral",
-        replace_original: false,
-        text: "You've already estimated!"
-      }
+      estimate = poker_session.estimates.new(
+        user: user,
+        number: number
+      )
+
+      if estimate.save
+        render json: {
+          response_type: "ephemeral",
+          replace_original: false,
+          text: "You estimated #{estimate.number}, end the planning session to see the results!"
+        }
+      else
+        render json: {
+          response_type: "ephemeral",
+          replace_original: false,
+          text: "You've already estimated!"
+        }
+      end
     end
   end
 
