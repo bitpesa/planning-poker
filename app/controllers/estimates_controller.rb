@@ -16,7 +16,7 @@ class EstimatesController < ApplicationController
       render json: {
         response_type: 'in_channel',
         replace_original: true,
-        text: "The team voted #{poker_session.result}"
+        text: "*The team voted #{poker_session.result}*"
       }
     else
       estimate = poker_session.estimates.new(
