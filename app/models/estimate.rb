@@ -9,4 +9,8 @@ class Estimate < ApplicationRecord
       scope: :user_id,
       message: 'user has already given an estimate for this session!'
     }
+
+  def result_string
+    "#{user.name} voted #{number}"
+  end
 end

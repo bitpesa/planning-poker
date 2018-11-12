@@ -16,7 +16,13 @@ class PokerSession < ApplicationRecord
   end
 
   def already_voted_text
+    have_has = estimates.one? ? 'has' : 'have'
     names = estimates.includes(:user).pluck(:name)
-    "#{names.to_sentence} have voted so far"
+    "#{names.to_sentence} #{have_has} voted so far"
+  end
+
+  def user_estimates
+    results = estimates.map(&:result_string)
+    results.to_sentence
   end
 end
