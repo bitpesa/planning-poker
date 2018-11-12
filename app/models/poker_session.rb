@@ -10,10 +10,10 @@ class PokerSession < ApplicationRecord
   end
 
   def closest_story_number_to_average
-    story_points_with_differences.inject([]) do |memo, array|
+    memo = []
+    story_points_with_differences.each do |array|
       if memo.empty?
         memo = array
-        break
       end
 
       if memo[1] > array[1]
@@ -21,8 +21,8 @@ class PokerSession < ApplicationRecord
       elsif memo[1] == array[1]
         memo = [memo, array].max_by {|arr| arr[0]}
       end
-      memo
     end
+    memo[0]
   end
 
   def story_points_with_differences
