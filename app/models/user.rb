@@ -6,8 +6,13 @@ class User < ApplicationRecord
     joins(:estimates).where('estimates.created_at > ?', RECENT_VOTER_THRESHOLD).uniq
   end
 
-  def self.still_waiting_for(poker_session)
+  def self.still_waiting_for_text(poker_session)
     remaining_voters = recent_voters - poker_session.users
-    remaining_voters.pluck(:name).to_sentence
+    remaining_sentence = remaining_voters.pluck(:name).to_sentence
+    if remaining_sentence.present?
+      ", still waiting for #{remaining_sentence}"
+    else
+      '.'
+    end
   end
 end
