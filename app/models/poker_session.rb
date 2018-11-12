@@ -1,12 +1,13 @@
 class PokerSession < ApplicationRecord
   has_many :estimates
-  SPRINT_NUMBERS = [1, 2, 3, 5, 8, 13, 20, 40, 100]
+  has_many :users, through: :estimates
+  STORY_POINTS = [1, 2, 3, 5, 8, 13, 20, 40, 100]
 
   def complete_session
     average = estimates.pluck(:number).sum / estimates.count
 
-    differences = SPRINT_NUMBERS.map do |sn|
-      [sn, (average - sn).abs]
+    differences = STORY_POINTS.map do |story_point|
+      [story_point, (average - story_point).abs]
     end
 
     closest_sprint_number = differences.min_by { |arr| arr[1] }[0]

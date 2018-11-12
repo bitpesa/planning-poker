@@ -25,7 +25,7 @@ class EstimatesController < ApplicationController
       )
 
       if estimate.save
-        msg[:attachments][0][:text] = poker_session.already_voted_text
+        msg[:attachments][0][:text] = "#{poker_session.already_voted_text}, still waiting for #{User.still_waiting_for(poker_session)}"
         render json: msg
       else
         render json: {
