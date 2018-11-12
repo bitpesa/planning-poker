@@ -2,9 +2,6 @@ class PokerSession < ApplicationRecord
   has_many :estimates
   SPRINT_NUMBERS = [1, 2, 3, 5, 8, 13, 20, 40, 100]
 
-  def complete!
-  end
-
   def complete_session
     average = estimates.pluck(:number).sum / estimates.count
 
@@ -16,5 +13,10 @@ class PokerSession < ApplicationRecord
     self.result = closest_sprint_number
     self.completed = true
     save
+  end
+
+  def already_voted_text
+    names = estimates.includes(:user).pluck(:name)
+    "#{names.to_sentence} have voted so far"
   end
 end

@@ -3,8 +3,8 @@ class EstimatesController < ApplicationController
     payload = JSON.parse(params[:payload])
     payload = ActiveSupport::HashWithIndifferentAccess.new(payload)
 
-    Rails.logger.info payload
     poker_session_id = payload[:callback_id]
+    msg = payload[:original_message]
 
     action = payload[:actions].first
 
@@ -25,11 +25,8 @@ class EstimatesController < ApplicationController
       )
 
       if estimate.save
-        render json: {
-          response_type: "ephemeral",
-          replace_original: false,
-          text: "You estimated #{estimate.number}, end the planning session to see the results!"
-        }
+        msg[:attachments][0][:text] = poker_session.already_voted_text
+        render json: msg
       else
         render json: {
           response_type: "ephemeral",
