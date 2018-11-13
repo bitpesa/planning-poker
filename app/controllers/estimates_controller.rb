@@ -3,33 +3,32 @@ class EstimatesController < ApplicationController
     payload = JSON.parse(params[:payload])
     payload = ActiveSupport::HashWithIndifferentAccess.new(payload)
 
-    Rails.logger.info payload
     poker_session_id = payload[:callback_id]
+    msg = payload[:original_message]
 
     action = payload[:actions].first
 
     poker_session = PokerSession.find(poker_session_id)
-    number = action[:value]
+    vote = action[:value]
     user = find_or_create_user(payload[:user])
     if action[:name] == 'end'
       poker_session.complete_session
       render json: {
         response_type: 'in_channel',
         replace_original: true,
-        text: "*The team voted #{poker_session.result}*"
+        text: "#{poker_session.user_estimates} *The average vote was #{poker_session.result}*"
       }
     else
+      skip_vote = vote == '?'
       estimate = poker_session.estimates.new(
         user: user,
-        number: number
+        number: vote,
+        skip_vote: skip_vote
       )
 
       if estimate.save
-        render json: {
-          response_type: "ephemeral",
-          replace_original: false,
-          text: "You estimated #{estimate.number}, end the planning session to see the results!"
-        }
+        msg[:attachments][0][:text] = poker_session.already_voted_text + User.still_waiting_for_text(poker_session)
+        render json: msg
       else
         render json: {
           response_type: "ephemeral",
