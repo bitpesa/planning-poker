@@ -9,7 +9,7 @@ class EstimatesController < ApplicationController
     action = payload[:actions].first
 
     poker_session = PokerSession.find(poker_session_id)
-    number = action[:value]
+    vote = action[:value]
     user = find_or_create_user(payload[:user])
     if action[:name] == 'end'
       poker_session.complete_session
@@ -19,9 +19,11 @@ class EstimatesController < ApplicationController
         text: "#{poker_session.user_estimates} *The average vote was #{poker_session.result}*"
       }
     else
+      skip_vote = vote == '?'
       estimate = poker_session.estimates.new(
         user: user,
-        number: number
+        number: vote,
+        skip_vote: skip_vote
       )
 
       if estimate.save

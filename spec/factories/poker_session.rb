@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :poker_session do
-    completed false
+    completed { false }
   end
 end
