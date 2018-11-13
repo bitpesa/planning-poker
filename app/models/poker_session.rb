@@ -32,7 +32,7 @@ class PokerSession < ApplicationRecord
   end
 
   def average_estimate
-    estimates.counted.pluck(:number).sum / estimates.counted.count
+    estimates.counted.pluck(:number).sum.to_f / estimates.counted.count
   end
 
   def already_voted_text
