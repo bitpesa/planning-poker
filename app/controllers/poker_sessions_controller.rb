@@ -1,7 +1,7 @@
 class PokerSessionsController < ApplicationController
   def create
     story_name = params[:text]
-    poker_session = PokerSession.new
+    poker_session = PokerSession.new(story_name: story_name)
     if poker_session.save
       PokerSlackMessage.new(story_name, poker_session.id).send
       head 200
