@@ -45,4 +45,8 @@ class PokerSession < ApplicationRecord
     results = estimates.map(&:result_string)
     results.to_sentence
   end
+
+  def complete_session_text
+    "*#{story_name}*" + " \n" +  user_estimates + " \n" + "*The average vote was #{result}*"
+  end
 end

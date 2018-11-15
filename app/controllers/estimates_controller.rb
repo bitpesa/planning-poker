@@ -16,7 +16,7 @@ class EstimatesController < ApplicationController
       render json: {
         response_type: 'in_channel',
         replace_original: true,
-        text: "#{poker_session.user_estimates} *The average vote was #{poker_session.result}*"
+        text: poker_session.complete_session_text
       }
     else
       skip_vote = vote == '?'
