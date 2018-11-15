@@ -47,6 +47,6 @@ class PokerSession < ApplicationRecord
   end
 
   def complete_session_text
-    "*#{story_name}*" + '\n' +  user_estimates + '\n' + "*The average vote was #{result}*"
+    "*#{story_name}*" + " \n" +  user_estimates + " \n" + "*The average vote was #{result}*"
   end
 end
