@@ -1,7 +1,6 @@
 class PokerSession < ApplicationRecord
   has_many :estimates
   has_many :users, through: :estimates
-  STORY_POINTS = [1, 2, 3, 5, 8, 13, 20, 40, 100]
 
   def complete_session
     self.result = closest_story_number_to_average
@@ -26,8 +25,8 @@ class PokerSession < ApplicationRecord
   end
 
   def story_points_with_differences
-    STORY_POINTS.map do |story_point|
-      [story_point, (average_estimate - story_point).abs]
+    scores.map(&:to_f).map do |score|
+      [score, (average_estimate - score).abs]
     end
   end
 
@@ -47,6 +46,18 @@ class PokerSession < ApplicationRecord
   end
 
   def complete_session_text
-    "*#{story_name}*" + " \n" +  user_estimates + " \n" + "*The average vote was #{result}*"
+    "*#{story_name}*" + "\n" +  user_estimates + "\n" + "*The average vote was #{result_text}*"
+  end
+
+  def result_text
+    if timebox?
+      "#{result} #{'day'.pluralize(result)}"
+    else
+      result
+    end
+  end
+
+  def timebox?
+    type == 'PokerSession::Timebox'
   end
 end

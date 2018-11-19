@@ -16,7 +16,15 @@ class Estimate < ApplicationRecord
     if skip_vote
       "#{user.name} skipped voting"
     else
-      "#{user.name} voted #{number}"
+      "#{user.name} voted #{number_text}"
+    end
+  end
+
+  def number_text
+    if poker_session.timebox?
+      "#{number} days"
+    else
+      number
     end
   end
 end
