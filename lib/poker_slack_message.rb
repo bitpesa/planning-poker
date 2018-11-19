@@ -1,111 +1,69 @@
 class PokerSlackMessage
-  attr_reader :story_name, :poker_session_id
+  attr_reader :story_name, :poker_session
+  MAX_ACTIONS_PER_ATTACHMENT = 5
 
-  def initialize(story_name, poker_session_id)
+  def initialize(story_name, poker_session)
     @story_name = story_name
-    @poker_session_id = poker_session_id
+    @poker_session = poker_session
   end
+
+  Attachment = Struct.new(:name, :text, :type, :value)
+
+  def attachments
+    text = 'Please pick an estimate'
+    arr = []
+    actions.each_slice(MAX_ACTIONS_PER_ATTACHMENT).with_index do |action_group, i|
+      attachment = {
+        fallback: 'You are unable to make an estimate',
+        callback_id: poker_session.id,
+        color: '#3AA3E3',
+        attachment_type: 'default'
+      }
+      attachment[:actions] = action_group
+
+      if i == 0
+        attachment[:text] = text
+      end
+
+      arr << attachment
+    end
+    arr
+  end
+
+  def actions
+    poker_session.scores.map do |score|
+      { name: 'estimate', text: score.to_s, type: 'button', value: score.to_f }
+    end + default_actions
+  end
+
+  def default_actions
+    [{
+      name: 'skip',
+      text: '?',
+      type: 'button',
+      value: '?'
+    },
+    {
+      name: 'end',
+      text: 'End',
+      type: 'button',
+      style: 'primary',
+      value: 'end',
+      confirm: {
+        title: "Are you sure?",
+        text: "This will end the poker session and total results!",
+        ok_text: "Yes",
+        dismiss_text: "No"
+      }
+    }
+    ]
+  end
+
 
   def request
     {
       text: story_name,
-      attachments: [
-        {
-          text: 'Please pick an estimate',
-          fallback: 'You are unable to make an estimate',
-          callback_id: poker_session_id,
-          color: '#3AA3E3',
-          attachment_type: 'default',
-          actions: [
-            {
-              name: 'estimate',
-              text: '1',
-              type: 'button',
-              value: 1
-            },
-            {
-              name: 'estimate',
-              text: '2',
-              type: 'button',
-              value: 2
-            },
-            {
-              name: 'estimate',
-              text: '3',
-              type: 'button',
-              value: 3
-            },                {
-              name: 'estimate',
-              text: '5',
-              type: 'button',
-              value: 5
-            },                {
-              name: 'estimate',
-              text: '8',
-              type: 'button',
-              value: 8
-            }
-          ]
-        },
-        {
-          fallback: 'You are unable to make an estimate',
-          callback_id: poker_session_id,
-          color: '#3AA3E3',
-          attachment_type: 'default',
-          actions: [
-            {
-              name: 'estimate',
-              text: '13',
-              type: 'button',
-              value: 13
-            },
-            {
-              name: 'estimate',
-              text: '20',
-              type: 'button',
-              value: 20
-            },
-            {
-              name: 'estimate',
-              text: '40',
-              type: 'button',
-              value: 40
-            },                {
-              name: 'estimate',
-              text: '100',
-              type: 'button',
-              value: 100
-            },                {
-              name: 'skip',
-              text: '?',
-              type: 'button',
-              value: '?'
-            }
-          ]
-        },
-        {
-          fallback: 'You are unable to make an estimate',
-          callback_id: poker_session_id,
-          color: '#3AA3E3',
-          attachment_type: 'default',
-          actions: [
-            {
-              name: 'end',
-              text: 'End',
-              type: 'button',
-              style: 'primary',
-              value: 'end',
-              confirm: {
-                title: "Are you sure?",
-                text: "This will end the poker session and total results!",
-                ok_text: "Yes",
-                dismiss_text: "No"
-              }
-            }
-          ]
-        }
-
-      ]
+      attachments: attachments
     }
   end
 
