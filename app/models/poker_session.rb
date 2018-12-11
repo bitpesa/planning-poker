@@ -51,9 +51,9 @@ class PokerSession < ApplicationRecord
 
   def result_text
     if timebox?
-      "#{result} #{'day'.pluralize(result)}"
+      "#{strip_zeros(result)} #{'day'.pluralize(result)}"
     else
-      result
+      strip_zeros(result)
     end
   end
 

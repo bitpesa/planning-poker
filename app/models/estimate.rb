@@ -22,9 +22,9 @@ class Estimate < ApplicationRecord
 
   def number_text
     if poker_session.timebox?
-      "#{number} days"
+      "#{strip_zeros(number)} days"
     else
-      number
+      strip_zeros(number)
     end
   end
 end

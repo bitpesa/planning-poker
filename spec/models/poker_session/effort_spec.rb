@@ -2,7 +2,7 @@ require 'rails_helper'
 RSpec.describe PokerSession::Effort do
   subject(:poker_session) { FactoryBot.create(:effort_poker_session, story_name: 'Testing poker sessions') }
   describe '#scores' do
-    its(:scores) { is_expected.to eq [1, 2, 3, 5, 8, 13, 20, 40, 100] }
+    its(:scores) { is_expected.to eq [0, 1, 2, 3, 5, 8, 13, 20, 40, 100] }
   end
 
   describe '#closest_story_number_to_average' do
