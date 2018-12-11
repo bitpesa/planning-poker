@@ -59,7 +59,6 @@ class PokerSlackMessage
     ]
   end
 
-
   def request
     {
       text: story_name,

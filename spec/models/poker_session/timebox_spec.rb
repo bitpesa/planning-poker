@@ -20,20 +20,29 @@ RSpec.describe PokerSession::Timebox do
 
   describe '#closest_story_number_to_average' do
     context 'when 3.5 Days and a 1 Day are voted for' do
-      let!(:estimate3) { FactoryBot.create(:estimate, number: 1, poker_session: poker_session) }
-      let!(:estimate5) { FactoryBot.create(:estimate, number: 3.5, poker_session: poker_session) }
+      let!(:estimate1) { FactoryBot.create(:estimate, number: 1, poker_session: poker_session) }
+      let!(:estimate2) { FactoryBot.create(:estimate, number: 3.5, poker_session: poker_session) }
 
       it 'will return 2.0' do
-        expect(poker_session.closest_story_number_to_average).to eq 2.0
+        expect(poker_session.closest_story_number_to_average).to eq 2.5
       end
     end
 
     context 'when 0.5 Days and a 5 Days are voted for' do
-      let!(:estimate3) { FactoryBot.create(:estimate, number: 0.5, poker_session: poker_session) }
-      let!(:estimate5) { FactoryBot.create(:estimate, number: 5, poker_session: poker_session) }
+      let!(:estimate1) { FactoryBot.create(:estimate, number: 0.5, poker_session: poker_session) }
+      let!(:estimate2) { FactoryBot.create(:estimate, number: 5, poker_session: poker_session) }
 
-      it 'will return 2.0' do
-        expect(poker_session.closest_story_number_to_average).to eq 2.5
+      it 'will return 2.5' do
+        expect(poker_session.closest_story_number_to_average).to eq 3.0
+      end
+    end
+
+    context 'with decimals voted' do
+      let!(:estimate1) {  FactoryBot.create(:estimate, number: 3.5, poker_session: poker_session)  }
+      let!(:estimate2) {  FactoryBot.create(:estimate, number: 3.5, poker_session: poker_session)  }
+
+      it 'will return 3.5' do
+        expect(poker_session.closest_story_number_to_average).to eq 3.5
       end
     end
   end
@@ -41,13 +50,24 @@ RSpec.describe PokerSession::Timebox do
   describe '#complete_session_text' do
     let(:user1) { FactoryBot.create(:user, name: 'jerome') }
     let(:user2) { FactoryBot.create(:user, name: 'callum') }
-    let!(:estimate3) { FactoryBot.create(:estimate, number: 3, poker_session: poker_session, user: user1) }
-    let!(:estimate5) { FactoryBot.create(:estimate, number: 5, poker_session: poker_session, user: user2) }
+    context 'with a decimal average' do
 
-    it 'will return the correct text' do
-      poker_session.complete_session
-      expect(poker_session.complete_session_text).to eq "*Testing poker sessions*\njerome voted 3 days and callum voted 5 days\n*The average vote was 4 days*"
+      let!(:estimate3) { FactoryBot.create(:estimate, number: 3, poker_session: poker_session, user: user1) }
+      let!(:estimate3_5) { FactoryBot.create(:estimate, number: 3.5, poker_session: poker_session, user: user2) }
+
+      it 'will return the correct text' do
+        poker_session.complete_session
+        expect(poker_session.complete_session_text).to eq "*Testing poker sessions*\njerome voted 3 days and callum voted 3.5 days\n*The average vote was 3.5 days*"
+      end
+    end
+
+    context 'with a whole number average' do
+      let!(:estimate) { FactoryBot.create(:estimate, number: 3, poker_session: poker_session, user: user1) }
+
+      it 'will return the correct text' do
+        poker_session.complete_session
+        expect(poker_session.complete_session_text).to eq "*Testing poker sessions*\njerome voted 3 days\n*The average vote was 3 days*"
+      end
     end
   end
 end
-

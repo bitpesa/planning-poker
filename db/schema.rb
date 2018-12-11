@@ -10,13 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_19_114209) do
+ActiveRecord::Schema.define(version: 2018_12_11_110137) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "estimates", force: :cascade do |t|
-    t.integer "number"
+    t.decimal "number", precision: 8, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "poker_session_id"
@@ -28,7 +28,7 @@ ActiveRecord::Schema.define(version: 2018_11_19_114209) do
 
   create_table "poker_sessions", force: :cascade do |t|
     t.boolean "completed"
-    t.integer "result"
+    t.decimal "result", precision: 8, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "story_name"
