@@ -18,10 +18,12 @@ The application runs under our heroku instance. To install into Slack please do 
 2. Once created add a new slash command with the following details:
 
   - Command: `/poker`
-  - Request URL: `https://bitpesa-planning-poker.herokuapp.com/poker_sessions`
+  - Request URL: `https://<HEROKU_ROOT>/poker_sessions`
+  
+  Where HEROKU_ROOT is the root URL for the installed heroku app
   
 3. Activate incoming webhooks for the app, and create a new webhook that posts to the `#engineering` channel
 4. Obtain the webhook URL, and change the heroku `SLACK_HOOK_URL` environment variable to point to that URL
 5. Also enable Interactive Components, with the follwoing settings:
 
-   - Request URL: `https://bitpesa-planning-poker.herokuapp.com/estimates`
+   - Request URL: `https://<HEROKU_ROOT>/estimates`
