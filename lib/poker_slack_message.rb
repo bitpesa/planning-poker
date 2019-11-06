@@ -1,10 +1,11 @@
 class PokerSlackMessage
-  attr_reader :story_name, :poker_session
+  attr_reader :story_name, :poker_session, :slack_url
   MAX_ACTIONS_PER_ATTACHMENT = 5
 
-  def initialize(story_name, poker_session)
+  def initialize(story_name, poker_session, slack_url)
     @story_name = story_name
     @poker_session = poker_session
+    @slack_url = slack_url
   end
 
   Attachment = Struct.new(:name, :text, :type, :value)
@@ -62,15 +63,12 @@ class PokerSlackMessage
   def request
     {
       text: story_name,
+      response_type: 'in_channel',
       attachments: attachments
     }
   end
 
   def send
     RestClient.post(slack_url, request.to_json)
-  end
-
-  def slack_url
-    ENV['SLACK_HOOK_URL']
   end
 end

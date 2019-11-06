@@ -1,9 +1,6 @@
 class PokerSessionsController < ApplicationController
   def create
     story_name = params[:text]
-    puts "======="
-    puts params
-    puts "======="
     timebox = story_name.downcase.include?('timebox')
     if timebox
       poker_session = PokerSession::Timebox.new(story_name: story_name)
@@ -12,7 +9,7 @@ class PokerSessionsController < ApplicationController
     end
 
     if poker_session.save
-      PokerSlackMessage.new(story_name, poker_session).send
+      PokerSlackMessage.new(story_name, poker_session, params[:response_url]).send
       head 200
     else
       head 422
