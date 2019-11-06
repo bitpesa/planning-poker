@@ -1,6 +1,9 @@
 class PokerSessionsController < ApplicationController
   def create
     story_name = params[:text]
+    puts "======="
+    puts params
+    puts "======="
     timebox = story_name.downcase.include?('timebox')
     if timebox
       poker_session = PokerSession::Timebox.new(story_name: story_name)
