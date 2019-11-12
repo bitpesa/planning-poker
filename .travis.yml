@@ -1,0 +1,26 @@
+language: ruby
+bundler_args: "--without development exclude_travis"
+cache: bundler
+dist: xenial
+matrix:
+  fast_finish: true
+script:
+  - bundle exec brakeman -z
+  - bundle exec rspec
+  - (! (git status --porcelain | grep . ) )
+addons:
+  postgresql: "11.1"
+services:
+  - postgresql
+  - redis-server
+before_install:
+  - sudo apt-get update
+  - sudo apt-get --yes remove postgresql\*
+  - sudo apt-get install -y postgresql-11 postgresql-client-11
+  - sudo cp /etc/postgresql/{9.6,11}/main/pg_hba.conf
+  - sudo service postgresql restart 11
+before_script:
+  - psql -c 'CREATE ROLE travis SUPERUSER LOGIN CREATEDB;' -U postgres
+  - bundle exec rake db:create
+  - bundle exec rake db:migrate
+sudo: false
