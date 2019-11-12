@@ -9,7 +9,7 @@ class PokerSessionsController < ApplicationController
     end
 
     if poker_session.save
-      PokerSlackMessage.new(story_name, poker_session).send
+      PokerSlackMessage.new(story_name, poker_session, params[:response_url]).send
       head 200
     else
       head 422

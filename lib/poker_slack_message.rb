@@ -1,10 +1,13 @@
+# frozen_string_literal: true
+
 class PokerSlackMessage
-  attr_reader :story_name, :poker_session
+  attr_reader :story_name, :poker_session, :slack_url
   MAX_ACTIONS_PER_ATTACHMENT = 5
 
-  def initialize(story_name, poker_session)
+  def initialize(story_name, poker_session, slack_url)
     @story_name = story_name
     @poker_session = poker_session
+    @slack_url = slack_url
   end
 
   Attachment = Struct.new(:name, :text, :type, :value)
@@ -21,9 +24,7 @@ class PokerSlackMessage
       }
       attachment[:actions] = action_group
 
-      if i == 0
-        attachment[:text] = text
-      end
+      attachment[:text] = text if i == 0
 
       arr << attachment
     end
@@ -43,34 +44,30 @@ class PokerSlackMessage
       type: 'button',
       value: '?'
     },
-    {
-      name: 'end',
-      text: 'End',
-      type: 'button',
-      style: 'primary',
-      value: 'end',
-      confirm: {
-        title: "Are you sure?",
-        text: "This will end the poker session and total results!",
-        ok_text: "Yes",
-        dismiss_text: "No"
-      }
-    }
-    ]
+     {
+       name: 'end',
+       text: 'End',
+       type: 'button',
+       style: 'primary',
+       value: 'end',
+       confirm: {
+         title: 'Are you sure?',
+         text: 'This will end the poker session and total results!',
+         ok_text: 'Yes',
+         dismiss_text: 'No'
+       }
+     }]
   end
 
   def request
     {
       text: story_name,
+      response_type: 'in_channel',
       attachments: attachments
     }
   end
 
   def send
     RestClient.post(slack_url, request.to_json)
-  end
-
-  def slack_url
-    ENV['SLACK_HOOK_URL']
   end
 end
