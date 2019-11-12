@@ -2,6 +2,8 @@ language: ruby
 bundler_args: "--without development exclude_travis"
 cache: bundler
 dist: xenial
+matrix:
+  fast_finish: true
 script:
   - bundle exec brakeman -z
   - bundle exec rspec
